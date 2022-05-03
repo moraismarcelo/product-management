@@ -20,6 +20,7 @@ mix.js('resources/js/app.js', 'public/js').vue()
         '@': 'resources/js',
     });
 
+
 if (mix.inProduction()) {
     mix.version();
 }
