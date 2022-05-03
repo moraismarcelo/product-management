@@ -14,4 +14,9 @@ class ProductVoltage extends Model
         'voltage',
     ];
 
+    public function product()
+    {
+        return $this->hasMany(Product::class);
+    }
+
 }

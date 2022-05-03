@@ -19,11 +19,11 @@ class Product extends Model
 
     public function brand()
     {
-        return $this->belongsTo(Brand::class);
+        return $this->belongsTo(ProductBrand::class);
     }
 
     public function voltage()
     {
-        return $this->belongsTo(Voltage::class);
+        return $this->belongsTo(ProductVoltage::class);
     }
 }
