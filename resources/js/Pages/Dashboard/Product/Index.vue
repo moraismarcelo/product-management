@@ -3,30 +3,34 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import Welcome from '@/Jetstream/Welcome.vue';
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
+import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 
 const products = ref([])
+const isLoading = ref(true)
+
+onMounted(() => {
+    getProducts()
+})
 
 function getProducts(){
     axios.get(route('api.products.index')).then(response => {
             if(response.data.products.length > 0){
                 products.value = response.data.products
+                isLoading.value = false
             }
     }).catch(error => {
             console.log(error)
     })
 }
 
-
-onMounted(() => {
-    getProducts()
-})
-
 function deleteProduct(product){
+    isLoading.value = true
     if(product){
         axios.delete(route('api.products.destroy', product.id))
         .then(response => {
             alert('Product deleted successfully!')
             getProducts()
+            isLoading.value = false
         }).catch(error => {
             alert(error)
         })
@@ -38,9 +42,14 @@ function deleteProduct(product){
 <template>
     <AppLayout title="Dashboard">
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Products
-            </h2>
+            <div class="flex justify-between">
+                <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                    Products
+                </h2>
+                <div>
+                    <PulseLoader v-if="isLoading" />
+                </div>
+            </div>
         </template>
 
         <div v-if="products" class="py-12 max-w-7xl mx-auto sm:px-6 lg:px-8">
