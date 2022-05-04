@@ -47,6 +47,7 @@ class ProductController extends Controller
                 return Inertia::render('Dashboard/Product/Index',[
                     'error' => false,
                     'message' => 'Product created successfully',
+                    'showAlert' => true,
                 ]);
             }
 
@@ -54,6 +55,7 @@ class ProductController extends Controller
            return Inertia::render('Dashboard/Product/Index',[
                 'error' => true,
                 'message' => 'Product creation failed',
+                'showAlert' => true,
             ]);
         }
     }

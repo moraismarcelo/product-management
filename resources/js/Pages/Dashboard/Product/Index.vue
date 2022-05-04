@@ -1,14 +1,21 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Welcome from '@/Jetstream/Welcome.vue';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, defineProps } from 'vue';
 import axios from 'axios';
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue';
 import { Link } from '@inertiajs/inertia-vue3';
 import JetButton from '@/Jetstream/Button.vue';
+import Alert from '@/Components/Alert.vue';
 
 const products = ref([])
 const isLoading = ref(true)
+
+const props = defineProps({
+    error: Boolean,
+    message: String,
+    showAlert: Boolean,
+});
 
 onMounted(() => {
     getProducts()
@@ -53,12 +60,20 @@ function deleteProduct(product){
                 </div>
             </div>
         <div class="my-2">
-        <Link
-            :href="route('dashboard.product.create')"
-            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        >
-            Add
-        </Link>
+            <Link
+                :href="route('dashboard.product.create')"
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            >
+                Add
+            </Link>
+            <div class="my-4" v-if="props.showAlert">
+                <Alert
+                    @click="showAlert = false"
+                    :message="props.message"
+                    :type="props.error ? true : false"
+                />
+            </div>
+
         </div>
         </template>
 
