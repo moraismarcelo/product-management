@@ -22,8 +22,8 @@ class ProductFactory extends Factory
     public function definition()
     {
         return [
-            'brand_id' => $this->faker->numberBetween(1, 5),
-            'voltage_id' => $this->faker->numberBetween(1, 3),
+            'product_brand_id' => $this->faker->numberBetween(1, 5),
+            'product_voltage_id' => $this->faker->numberBetween(1, 3),
             'name' => $this->faker->name(),
             'description' => $this->faker->sentence(),
         ];

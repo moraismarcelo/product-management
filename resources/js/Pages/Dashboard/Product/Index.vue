@@ -3,7 +3,9 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import Welcome from '@/Jetstream/Welcome.vue';
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
-import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
+import PulseLoader from 'vue-spinner/src/PulseLoader.vue';
+import { Link } from '@inertiajs/inertia-vue3';
+import JetButton from '@/Jetstream/Button.vue';
 
 const products = ref([])
 const isLoading = ref(true)
@@ -14,10 +16,10 @@ onMounted(() => {
 
 function getProducts(){
     axios.get(route('api.products.index')).then(response => {
-            if(response.data.products.length > 0){
-                products.value = response.data.products
-                isLoading.value = false
-            }
+        if(response.data.products.length > 0){
+            products.value = response.data.products
+            isLoading.value = false
+        }
     }).catch(error => {
             console.log(error)
     })
@@ -50,6 +52,14 @@ function deleteProduct(product){
                     <PulseLoader v-if="isLoading" />
                 </div>
             </div>
+        <div class="my-2">
+        <Link
+            :href="route('dashboard.product.create')"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        >
+            Add
+        </Link>
+        </div>
         </template>
 
         <div v-if="products" class="py-12 max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -89,7 +99,7 @@ function deleteProduct(product){
                     {{product.voltage}}
                 </td>
                 <td class="px-6 py-4 text-center">
-                    <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
+                    <Link :href="route('dashboard.product.form', product.id)" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</Link>
                     |
                     <a @click.prevent="deleteProduct(product)" href="#" class="font-medium text-red-600 dark:text-red-500 hover:underline">Delete</a>
                 </td>

@@ -20,7 +20,7 @@ class ProductController extends Controller
         }catch(\Exception $e){
             return response()->json([
                 'error' => true,
-                'message' => 'Sorry, something went wrong :(',
+                'message' => 'Sorry, something went wrong :( ' . $e->getMessage(),
             ],500);
         }
     }
