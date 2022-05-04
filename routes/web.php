@@ -38,8 +38,9 @@ Route::middleware([
     Route::prefix('/dashboard/products')->name('dashboard.')->group(function (){
         Route::get('/', [ProductController::class, 'index'])->name('product.index');
         Route::get('/create', [ProductController::class, 'create'])->name('product.create');
-        Route::get('/form/{productId?}', [ProductController::class, 'form'])->name('product.form');
+        Route::get('/edit/{product}', [ProductController::class, 'edit'])->name('product.edit');
         Route::post('/store', [ProductController::class, 'store'])->name('product.store');
+        Route::patch('/update/{product}', [ProductController::class, 'update'])->name('product.update');
 
     });
 

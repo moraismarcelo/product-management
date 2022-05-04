@@ -17,40 +17,7 @@ const props = defineProps({
     voltages: Array,
 });
 
-const editing = ref(false);
-
-const form = useForm({
-    _method: 'POST',
-    name: props.product.name && '',
-    description: props.product.description && '',
-    brand_id: props.product.brand_id && '',
-    voltage_id: props.product.voltage_id && '',
-});
-
-onMounted(() => {
-    if (props.product) {
-        editing.value = true;
-    }
-});
-
-const sendForm = () => {
-    if (editing.value) {
-        form._method = 'PUT';
-    }
-
-    form.post(route('dashboard.product.store'), {
-        errorBag: 'sendForm',
-        preserveScroll: true,
-        onSuccess: () => {
-            if (editing.value) {
-                Inertia.replace(route('product.show', { id: props.product.id }));
-            } else {
-                Inertia.replace(route('product.index'));
-            }
-        },
-    });
-};
-
+const form = useForm(props.product);
 
 </script>
 
@@ -63,13 +30,14 @@ const sendForm = () => {
                 </h2>
             </div>
         </template>
+        <form @submit.prevent="form.patch(route('dashboard.product.update', props.product.id))">
 
         <div class="py-12 max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="col-span-6 sm:col-span-4">
                 <JetLabel for="name" value="Name" />
                 <JetInput
                     id="name"
-                    v-model="props.product.name"
+                    v-model="form.name"
                     type="text"
                     class="mt-1 block w-full"
                     autocomplete="name"
@@ -82,7 +50,7 @@ const sendForm = () => {
                 <JetLabel for="description" value="Description" />
                 <JetInput
                     id="description"
-                    v-model="props.product.description"
+                    v-model="form.description"
                     type="text"
                     class="mt-1 block w-full"
                     autocomplete="description"
@@ -90,62 +58,46 @@ const sendForm = () => {
                 <JetInputError :message="form.errors.description" class="mt-2" />
             </div>
         </div>
-        <div class="flex justify-center">
-            <div class="mb-3 xl:w-96">
-                <select class="form-select appearance-none
-                block
-                w-full
-                px-3
-                py-1.5
-                text-base
-                font-normal
-                text-gray-700
-                bg-white bg-clip-padding bg-no-repeat
-                border border-solid border-gray-300
-                rounded
-                transition
-                ease-in-out
-                m-0
-                focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" aria-label="Default select example"
-                v-if="props.brands.length > 0"
+
+        <div class="col-span-6 sm:col-span-4">
+                <JetLabel for="product_brand_id" value="Brands" />
+                <select
+                    v-if="props.brands.length > 0"
+                    id="product_brand_id"
+                    v-model="form.product_brand_id"
+                     class="border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
                 >
-                    <option>Open this select menu</option>
-                    <option v-for="brand in props.brands" :key="brand.id" :value="brand.id" :selected="product.id === brand.id" >{{brand.name}}</option>
+                <option selected value="">Select a brand</option>
+                <option v-for="brand in props.brands" :key="brand.id" :value="brand.id">{{brand.name}}</option>
+
                 </select>
+                <JetInputError :message="form.errors.product_brand_id" class="mt-2" />
             </div>
-        </div>
-        <div class="flex justify-center">
-            <div class="mb-3 xl:w-96">
-                <select class="form-select appearance-none
-                block
-                w-full
-                px-3
-                py-1.5
-                text-base
-                font-normal
-                text-gray-700
-                bg-white bg-clip-padding bg-no-repeat
-                border border-solid border-gray-300
-                rounded
-                transition
-                ease-in-out
-                m-0
-                focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" aria-label="Default select example"
-                v-if="props.voltages.length > 0"
+
+            <div class="col-span-6 sm:col-span-4">
+                <JetLabel for="product_voltage_id" value="Voltages" />
+                <select
+                    v-if="props.voltages.length > 0"
+                    id="product_voltage_id"
+                    v-model="form.product_voltage_id"
+                     class="border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
                 >
-                    <option>Open this select menu</option>
-                    <option v-for="voltage in props.voltages" :key="voltage.id" :value="voltage.id" :selected="product.id === voltage.id" >{{voltage.voltage}}</option>
+                <option selected value="">Select a voltage</option>
+                <option v-for="voltage in props.voltages" :key="voltage.id" :value="voltage.id">{{voltage.voltage}}</option>
+
                 </select>
+                <JetInputError :message="form.errors.product_voltage_id" class="mt-2" />
             </div>
-        </div>
+
         <div >
             <JetActionMessage :on="form.recentlySuccessful" class="mr-3">
                 Saved.
             </JetActionMessage>
 
-            <JetButton @click="sendForm" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+            <JetButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                 Save
             </JetButton>
         </div>
+        </form>
     </AppLayout>
 </template>

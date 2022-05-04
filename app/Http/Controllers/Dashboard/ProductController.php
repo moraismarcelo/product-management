@@ -9,6 +9,7 @@ use App\Models\Product;
 use App\Models\ProductBrand;
 use App\Models\ProductVoltage;
 use App\Http\Requests\Api\Product\StoreProductRequest;
+use App\Http\Requests\Api\Product\UpdateProductRequest;
 
 class ProductController extends Controller
 {
@@ -26,14 +27,12 @@ class ProductController extends Controller
             ]);
     }
 
-    public function form($productId = null)
+    public function edit(Product $product)
     {
-        $product = Product::findOrFail($productId);
-
         $brands = ProductBrand::all();
         $voltages = ProductVoltage::all();
 
-        return Inertia::render('Dashboard/Product/Form', [
+        return Inertia::render('Dashboard/Product/Edit', [
             'product' => $product,
             'brands' => $brands,
             'voltages' => $voltages,
@@ -55,6 +54,26 @@ class ProductController extends Controller
            return Inertia::render('Dashboard/Product/Index',[
                 'error' => true,
                 'message' => 'Product creation failed',
+                'showAlert' => true,
+            ]);
+        }
+    }
+
+    public function update(Product $product, UpdateProductRequest $request)
+    {
+        try{
+            // dd($request->validated());
+            // dd($product);
+            if($product->update($request->validated())){
+                return redirect()->route('dashboard.product.index')->with('error', false)->with('message', 'Product updated successfully')->with('showAlert', true);
+            }
+            // dd("adds");
+
+        }catch (\Exception $e){
+            dd("asdsa");
+            return Inertia::render('Dashboard/Product/Index',[
+                'error' => true,
+                'message' => 'Product update failed',
                 'showAlert' => true,
             ]);
         }
